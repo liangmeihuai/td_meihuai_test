@@ -63,4 +63,15 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter { // (1)
         logger.error("server caught exception", cause);
         ctx.close();
     }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("server channel active");
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("server channel Inactive");
+    }
+
 }

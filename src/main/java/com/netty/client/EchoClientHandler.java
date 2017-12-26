@@ -27,6 +27,10 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter { // (1)
         System.out.println("client send req...");
         ctx.writeAndFlush(firstMessage);
     }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("client channel Inactive");
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)

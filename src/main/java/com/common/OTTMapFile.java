@@ -66,7 +66,8 @@ public class OTTMapFile {
 
     public static String replaceMdColonAndMd5LowerUpperCase(String id){
         id = id.replaceAll(":","").toUpperCase();
-        return MD5Static(id).toLowerCase();
+//        return MD5Static(id).toLowerCase();
+        return MD5Static(id).toUpperCase();
     }
     @Test
     public void testSplit(){
