@@ -12,12 +12,14 @@ public class MillToDate {
     public static void main(String[] args) throws ParseException {
         System.out.println("date1 = " + new Date(1512557856883L));
         System.out.println("date2 = " + new Date(1512921599999L));
-        String dateStr = "2018-02-16";
+        String dateStr1 = "2017-11-14 00:00:00";
+        String dateStr = "2018-01-05 23:59:59";
+        System.out.println("dateStr1 is [" + dateStr1 + "],And MilliTimes is [" +formatDateStrToDate(dateStr1).getTime()+ "]");
         System.out.println("dateStr is [" + dateStr + "],And MilliTimes is [" +formatDateStrToDate(dateStr).getTime()+ "]");
     }
 
     private static Date formatDateStrToDate(String dateStr) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = format.parse(dateStr);
         return date;
     }
