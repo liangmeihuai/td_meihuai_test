@@ -14,7 +14,7 @@
 //    }
 //
 //    /**
-//     * ²âÊÔwrapper°ü×°protocolµÄ¹ØÏµ
+//     * æµ‹è¯•wrapperåŒ…è£…protocolçš„å…³ç³»
 //     */
 //    @Test
 //    public void testInheritWrapper(){
