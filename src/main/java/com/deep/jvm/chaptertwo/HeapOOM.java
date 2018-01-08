@@ -1,4 +1,4 @@
-    package com.deep.jvm.chaptertwo;
+package com.deep.jvm.chaptertwo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,5 @@
 package com.common;
-
+import java.util.stream.Stream;
 /**
  * Created by tend on 2018/1/2.
  */
