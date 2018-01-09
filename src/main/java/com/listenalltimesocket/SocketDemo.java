@@ -22,27 +22,27 @@ public class SocketDemo {
         writer.flush();
 
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-        String line = null;
-        try{
-            line = reader.readLine();
-        }catch (Throwable throwable){
-            throwable.printStackTrace();
-        }
-        int index = 0;
-        while (line != null){
-            String remoteIp = socket.getInetAddress().getHostAddress();
-            System.out.println("socketDemo the index is [" + index++ + "]receive from the remote ip is [" + remoteIp + "],and the msg is [" + line + "]");
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//
+//        String line = null;
+//        try{
 //            line = reader.readLine();
-            line = null;
-        }
+//        }catch (Throwable throwable){
+//            throwable.printStackTrace();
+//        }
+//        int index = 0;
+//        while (line != null){
+//            String remoteIp = socket.getInetAddress().getHostAddress();
+//            System.out.println("socketDemo the index is [" + index++ + "]receive from the remote ip is [" + remoteIp + "],and the msg is [" + line + "]");
+////            line = reader.readLine();
+//            line = null;
+//        }
         //关闭流
         System.out.println("close stream almost start");
         Thread.sleep(16000);
         System.out.println("close stream almost end");
         writer.close();
-        reader.close();
+//        reader.close();
 socket.close();
 
     }

@@ -18,15 +18,15 @@ public class ServerSocketDemo {
         while (true){
             socket = serverSocket.accept();
             System.out.println("server accept...");
-//            Thread.sleep(60000);
+            Thread.sleep(60000);
             InputStream inputStream = socket.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
             // 发送信息到客户端
-            System.out.println("send to the client begin.");
-            writer.print("the msg you send to me is [" + "aaa" + "]");
-            writer.flush();
+//            System.out.println("send to the client begin.");
+//            writer.print("the msg you send to me is [" + "aaa" + "]");
+//            writer.flush();
             System.out.println("send to the client end.");
             String line = bufferedReader.readLine();
             int index = 0;
