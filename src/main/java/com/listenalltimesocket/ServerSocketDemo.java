@@ -18,6 +18,7 @@ public class ServerSocketDemo {
         while (true){
             socket = serverSocket.accept();
             System.out.println("server accept...");
+//            Thread.sleep(60000);
             InputStream inputStream = socket.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
@@ -43,6 +44,7 @@ public class ServerSocketDemo {
 
             // 服务端的close
             //  serverSocket.close();
+
         }
     }catch (Throwable throwable){
         throwable.printStackTrace();

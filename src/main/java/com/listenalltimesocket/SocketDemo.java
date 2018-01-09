@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by tend on 2018/1/5.
  */
 public class SocketDemo {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Socket socket = new Socket();
         socket.connect(new InetSocketAddress(Constant.HOST, Constant.PORT));
 
@@ -20,6 +20,7 @@ public class SocketDemo {
         // 发送信息到服务端
         writer.println("send the msg to server is [Hello Tcp " +new Date()+ "]");
         writer.flush();
+
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -36,10 +37,13 @@ public class SocketDemo {
 //            line = reader.readLine();
             line = null;
         }
-
         //关闭流
+        System.out.println("close stream almost start");
+        Thread.sleep(16000);
+        System.out.println("close stream almost end");
         writer.close();
         reader.close();
-//        socket.close();
+socket.close();
+
     }
 }

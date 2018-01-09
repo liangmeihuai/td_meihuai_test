@@ -40,6 +40,6 @@ public class SocketDemo {
         //关闭流
         writer.close();
         reader.close();
-//        socket.close();
+        socket.close();
     }
 }

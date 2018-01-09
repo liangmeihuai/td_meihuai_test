@@ -34,8 +34,8 @@ public class ServerSocketDemo {
         }
 
         // 关闭流
-//        writer.close();
-//        bufferedReader.close();
+        writer.close();
+        bufferedReader.close();
 //        socket.close();
 
         // 服务端的close
