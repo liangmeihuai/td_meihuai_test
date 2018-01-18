@@ -5,7 +5,7 @@ package com.study.threadlocal;
  */
 public class ThreadLocalTest {
     public static void main(String[] args) throws InterruptedException {
-        final ThreadLocal<String> threadLocal = new ThreadLocal<String>(){
+         ThreadLocal<String> threadLocal = new ThreadLocal<String>(){
             @Override
             protected String initialValue() {
                 return "initValue";
@@ -16,8 +16,9 @@ public class ThreadLocalTest {
         System.out.println(str.toString());
         System.out.println(Thread.currentThread().getName() + "--1=" + threadLocal.get());
         new Thread(new MyThread(threadLocal)).start();
-        Thread.sleep(2000);
-        System.out.println(Thread.currentThread().getName() + "--2=" + threadLocal.get());
+
+        threadLocal = null;
+//        System.out.println(Thread.currentThread().getName() + "--2=" + threadLocal.get());
     }
 
     static class MyThread implements Runnable{
@@ -30,6 +31,13 @@ public class ThreadLocalTest {
         @Override
         public void run() {
             threadLocal.set("inner thread value");
+            threadLocal = null;
+            System.gc();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             System.out.println(Thread.currentThread().getName() + "--inner=" + threadLocal.get());
             threadLocal = null;
         }
