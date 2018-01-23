@@ -1,6 +1,10 @@
 package com.study.threadlocal;
 
+import com.common.reflect.Person;
+
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -41,6 +45,12 @@ public class WeakRef
         System.out.println("After Gc:");
         System.out.println(studentWeakRef.get());//gc之后一定会被回收
 
+        List<Person> list = new ArrayList<>();
+        list.add(null);
+        list.add(null);
+        list.add(null);
+        list.add(null);
+        System.out.println(list.get(0) == null);
     }
 
 }
