@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  *
  */
 public class MemoryHighDemo {
-	
+
 	/**
 	 * @param args
 	 */
