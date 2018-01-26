@@ -52,7 +52,7 @@ public class SyHighDemo {
 						lockObject.wait(random.nextInt(10));
 					}
 				} catch (Exception e) {
-					;
+
 				}
 			}
 		}
