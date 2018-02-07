@@ -8,8 +8,8 @@ public class CMSGCTest {
     private static  final  int _1M = 1 * 1024 * 1024;
     public static void main(String[] args) throws InterruptedException {
         byte[] a = new byte[3 * _1M];
-        byte[] b = new byte[2 * _1M + 512 * 1024];
-//        byte[] c = new byte[1 * _1M];
+        byte[] b = new byte[2 * _1M + 522 * 1024];
+        byte[] c = new byte[1 * _1M];
 //        byte[] e = new byte[1 * _1M];
         System.out.println("gc trigger");
         Thread.sleep(3000);

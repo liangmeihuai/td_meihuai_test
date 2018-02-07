@@ -1,5 +1,8 @@
 package com.common;
 
+import com.talkingdata.mc.utils.DateUtil;
+import org.junit.Test;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,5 +25,11 @@ public class MillToDate {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = format.parse(dateStr);
         return date;
+    }
+
+    @Test
+    public void dateToMillis(){
+        System.out.println("start = " + DateUtil.toDate("2018-01-02 00:00:00", "yyyy-MM-dd HH:mm:ss").getTime());
+        System.out.println("end = " + DateUtil.toDate("2018-02-28 23:59:59", "yyyy-MM-dd HH:mm:ss").getTime());
     }
 }
