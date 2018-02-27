@@ -1,0 +1,4 @@
+D:\meihuai\talkingdata\读syz_bitmap>javac -g:vars,lines TJInteger.java
+D:\meihuai\talkingdata\读syz_bitmap>javap -verbose TJInteger > TJInteger_assembly.txt
+计算每个对象字节大小的命令:
+java -javaagent:td_meihuai_test.jar -cp . com.td.test.meihuai.memory.BytesDemo

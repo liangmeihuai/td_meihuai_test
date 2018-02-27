@@ -1,0 +1,374 @@
+二进制 java Class文件解析实例
+转载 2014年11月22日 17:40:58 486
+其实网上已经有很多java Class文件的解析实例的文章，写这篇博客，只是为了自己仔仔细细的按照jvm spec看一边，别无其他。
+
+先上class文件的格式。
+ClassFile {
+        u4 magic;
+        u2 minor_version;
+        u2 major_version;
+        u2 constant_pool_count;
+        cp_info constant_pool[constant_pool_count-1];
+        u2 access_flags;
+        u2 this_class;
+        u2 super_class;
+        u2 interfaces_count;
+        u2 interfaces[interfaces_count];
+        u2 fields_count;
+        field_info fields[fields_count];
+        u2 methods_count;
+        method_info methods[methods_count];
+        u2 attributes_count;
+        attribute_info attributes[attributes_count];
+    }
+
+其中，u2代表2个字节的无符号整数。u4代表4个字节的无符号整数，其他如cp_info、field_info
+是一些结构数据，接下去会讲。
+这次要解析的是一个非常简单的类：TJ.java，代码如下：
+public class TJ
+{
+    private final int f1 = 2;
+
+    public int m1(int i){
+        return i+1;
+    }
+
+    private void m2(){
+    }
+}
+使用jdk1.6编译，产生的二进制类文件如下：
+
+
+
+CA FE BA BE 00 00 00 32 00 16 0A 00 04 00 12 09
+00 03 00 13 07 00 14 07 00 15 01 00 02 66 31 01
+00 01 49 01 00 0D 43 6F 6E 73 74 61 6E 74 56 61
+6C 75 65 03 00 00 00 02 01 00 06 3C 69 6E 69 74
+3E 01 00 03 28 29 56 01 00 04 43 6F 64 65 01 00
+0F 4C 69 6E 65 4E 75 6D 62 65 72 54 61 62 6C 65
+01 00 02 6D 31 01 00 04 28 49 29 49 01 00 02 6D
+32 01 00 0A 53 6F 75 72 63 65 46 69 6C 65 01 00
+07 54 4A 2E 6A 61 76 61 0C 00 09 00 0A 0C 00 05
+00 06 01 00 02 54 4A 01 00 10 6A 61 76 61 2F 6C
+61 6E 67 2F 4F 62 6A 65 63 74 00 21 00 03 00 04
+00 00 00 01 00 12 00 05 00 06 00 01 00 07 00 00
+00 02 00 08 00 03 00 01 00 09 00 0A 00 01 00 0B
+00 00 00 26 00 02 00 01 00 00 00 0A 2A B7 00 01
+2A 05 B5 00 02 B1 00 00 00 01 00 0C 00 00 00 0A
+00 02 00 00 00 01 00 04 00 03 00 01 00 0D 00 0E
+00 01 00 0B 00 00 00 1C 00 02 00 02 00 00 00 04
+1B 04 60 AC 00 00 00 01 00 0C 00 00 00 06 00 01
+00 00 00 06 00 02 00 0F 00 0A 00 01 00 0B 00 00
+00 19 00 00 00 01 00 00 00 01 B1 00 00 00 01 00
+0C 00 00 00 06 00 01 00 00 00 0B 00 01 00 10 00
+00 00 02 00 11
+下面对照上面的格式结构一点点的解析。
+
+CA FE BA BE：头四个字节是魔数，表示这是java class文件。
+
+00 00：次版本为0。
+
+00 32：主版本0x32，表示jdk1.6编译的。Jdk1.5为0x31，jdk1.4为0x30。
+
+00 16：常量池的入口（entry）数量。包括自己本身（这里很奇怪），所以接下来有21项的常量池入口。
+
+
+我会在每个常量池项的前面表上索引。常量池的第一个字节表示类型。具体类型对照表如下：
+
+Constant Type	Value
+CONSTANT_Class	7
+CONSTANT_Fieldref	9
+CONSTANT_Methodref	10
+CONSTANT_InterfaceMethodref	11
+CONSTANT_String	8
+CONSTANT_Integer	3
+CONSTANT_Float	4
+CONSTANT_Long	5
+CONSTANT_Double	6
+CONSTANT_NameAndType	12
+CONSTANT_Utf8	1
+0A 00 04 00 12：【1】，第一个字节为10，所以是CONSTANT_Methodref，它的结构如下：
+
+CONSTANT_Methodref_info {
+
+
+
+u1 tag;
+
+
+
+u2 class_index;
+
+
+
+u2 name_and_type_index;
+
+
+
+}
+
+
+
+所以，class_index=4，name_and_type_index=12,这两个代表常量池第4项和第12项。
+
+
+
+09 00 03 00 13：【2】 这是一个CONSTANT_Fieldref，他的结构和上面的类似class_index=3，name_and_type_index=13
+
+
+
+07 00 14：【3】这个是CONSTANT_Class，它的结构如下：
+
+
+
+CONSTANT_Class_info {
+
+
+
+
+ u1 tag;
+
+
+
+
+ u2 name_index;
+
+
+
+
+}
+
+
+
+name_index为20，指向的是一个utf8的字节码，即TJ，这个后面会看到。
+
+
+
+07 00 15: 【4】 也是一个CONSTANT_Class，name_index为21，即java/lang/Object
+
+
+
+01 00 02 66 31: 【5】CONSTANT_Utf8，结构如下：
+
+
+
+CONSTANT_Utf8_info {
+
+
+
+u1 tag;
+
+
+
+u2 length;
+
+
+
+u1 bytes[length];
+
+
+
+}
+
+
+
+最后两个字节代表字符串“f1”的utf-8字节码。
+
+
+
+01 00 01 49：【6】字符串I
+
+
+
+01 00 0D 43 6F 6E 73 74 61 6E 74 56 61 6C 75 65 ：【7】字符串ConstantValue
+
+
+
+03 00 00 00 02：【8】CONSTANT_Integer，整数值2
+
+
+
+01 00 06 3C 69 6E 69 74 3E：【9】字符串<init>
+
+
+
+01 00 03 28 29 56：【10】字符串()V
+
+
+
+01 00 04 43 6F 64 65：【11】字符串code
+
+
+
+01 00 0F 4C 69 6E 65 4E 75 6D 62 65 72 54 61 62 6C 65：【12】字符串LineNumberTable
+
+
+
+01 00 02 6D 31：【13】字符串m1
+
+
+
+01 00 04 28 49 29 49 ：【14】字符串(I)I，表示一个整数参数且返回整数的方法。
+
+
+
+01 00 02 6D 32 ：【15】字符串m2
+
+
+
+01 00 0A 53 6F 75 72 63 65 46 69 6C 65 ：【16】字符串SourceFile
+
+
+
+01 00 07 54 4A 2E 6A 61 76 61：【17】字符串TJ.java
+
+
+
+0C 00 09 00 0A：【18】CONSTANT_NameAndType，结构如下：
+
+
+
+CONSTANT_NameAndType_info {
+
+
+
+u1 tag;
+
+
+
+u2 name_index;
+
+
+
+u2 descriptor_index;
+
+
+
+}
+
+name_index=9，代表方法<init>，descriptor_index=10，()V，代表无参且返回void的方法。
+
+
+
+
+
+0C 00 05 00 06：【19】结构同上，name_index=5，即f1，descriptor_index=6，即整数。
+
+
+
+01 00 02 54 4A ：【20】字符串TJ
+
+
+
+01 00 10 6A 61 76 61 2F 6C 61 6E 67 2F 4F 62 6A 65 63 74：【21】字符串java/lang/Object
+到此，常量池结束。
+00 21：类的描述符为public。
+00 03 ：this class为常量池第三个，TJ，即这个类的名字为TJ
+00 04：super class为常量池第四个，java/lang/Object，即它的超类为java.lang.Object
+00 00：接口个数0。
+00 01：field数量1。
+00 12 00 05 00 06 00 01 00 07 00 00 00 02 00 08：field的结构如下
+field_info {
+     u2 access_flags;
+     u2 name_index;
+     u2 descriptor_index;
+     u2 attributes_count;
+     attribute_info attributes[attributes_count];
+    }
+access_flags为00 12，代表ACC_PRIVATE+ ACC_FINAL
+
+name_index：常量池索引为5的入口，即f1，即类成员的名字为f1
+descriptor_index：I，代表integer。
+ attributes_count：1个。
+attribute_info：
+attribute_info {
+     u2 attribute_name_index;
+     u4 attribute_length;
+     u1 info[attribute_length];
+}
+
+attribute_name_index：7，即ConstantValue，结构如下
+ConstantValue_attribute {
+     u2 attribute_name_index;
+     u4 attribute_length;
+     u2 constantvalue_index;
+    }
+attribute_length：2
+constantvalue_index：2
+----------------------------------------下面开始方法
+
+00 03：3个方法。
+method_info {
+     u2 access_flags;
+     u2 name_index;
+     u2 descriptor_index;
+     u2 attributes_count;
+     attribute_info attributes[attributes_count];
+    }
+--------------------------------------------第一个方法<init>，这个是编译器产生的生成实例的初始化方法。
+access_flags：public
+name_index：00 09，<init>
+descriptor_index：00 0A，()V表示无参数，返回void
+attributes_count :00 01,1个
+attribute_name_index ：00 0B ，code
+attribute_length：38个
+Code_attribute {
+     u2 attribute_name_index;
+     u4 attribute_length;
+     u2 max_stack;
+     u2 max_locals;
+     u4 code_length;
+     u1 code[code_length];
+     u2 exception_table_length;
+     {     u2 start_pc;
+            u2 end_pc;
+            u2  handler_pc;
+            u2  catch_type;
+     } exception_table[exception_table_length];
+     u2 attributes_count;
+     attribute_info attributes[attributes_count];
+    }
+max_stack: 00 02
+max_locals: 00 01
+code_length: 00 00 00 0A,10
+code: 2A B7 00 01 2A 05 B5 00 02 B1,指令
+exception table length：00 00
+attributes_count：1
+attribute_name_index：00 0C，LineNumberTable
+LineNumberTable_attribute {
+     u2 attribute_name_index;
+     u4 attribute_length;
+     u2 line_number_table_length;
+     {  u2 start_pc;
+        u2 line_number;
+     } line_number_table[line_number_table_length];
+    }
+attribute_length：10
+line_number_table_length：2
+start_pc：00 00
+line_number：00 01
+tart_pc：00 04
+line_number：00 03
+到此第一个方法结束。
+----------------------------------------------------------------------第二个方法开始
+access_flags：00 01，public
+name_index：00 0D，m1
+desc_index：00 0E，(I)I，有一个整数参数，返回一个整数。
+00 01：一个attr
+00 0B：code
+00 00 00 1C：attr_length:28
+Code_atrr:28个字节，不分析了和上面的方法相同。
+
+----------------------------------------------------------------------第三个方法
+00 02：private
+00 0F：m2
+00 0A: ()V，无参，返回void
+00 01：一个attr
+00 0B：code
+00 00 00 19：attr_length  25
+接下去的25个字节是Code_atrr，同样不分析了。
+------------------------------------------------------------------
+00 01：1个类的attr
+00 10：SourceFile
+00 00 00 02：len=2
+00 11：17，TJ.java

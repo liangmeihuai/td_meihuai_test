@@ -1,12 +1,8 @@
 package com.tdtest;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.sun.javafx.collections.MappingChange;
-import com.sun.javafx.property.adapter.PropertyDescriptor;
 import com.talkingdata.mc.utils.DateUtil;
-import org.junit.Test;
 
 import java.lang.reflect.Type;
 import java.util.*;
