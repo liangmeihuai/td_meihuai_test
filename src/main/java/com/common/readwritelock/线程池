@@ -1,0 +1,129 @@
+并发库应用之三 & 线程池与定时器应用
+　　在TCP服务器编程模型的原理，每一个客户端连接用一个单独的线程为之服务，当与客户端的会话结束时，线程也就结束了，即每来一个客户端连接，服务器端就要创建一个新线程。如果访问服务器的客户端很多，那么服务器要不断地创建和销毁线程，这将严重影响服务器的性能。线程池的概念与此类似，首先创建一些线程，它们的集合称为线程池，当服务器接收到一个客户请求后，就从线程池中取出一个空闲的线程为之服务，服务完后不关闭该线程，而是将该线程还回到线程池中。
+
+　　 假设如果没有线程池的话，那么就需要在run方法中不停判断，还有没有任务需要执行
+
+       线程池：先创建多个线程放在线程池中，当有任务需要执行时，从线程池中找一个空闲线程执行任务，任务完成后，并不销毁线程，而是返回线程池，等待新的任务安排。
+
+       线程池编程中，任务是提交给整个线程池的，并不是提交给某个具体的线程，而是由线程池从中挑选一个空闲线程来运行任务。一个线程同时只能执行一个任务，可以同时向一个线程池提交多个任务。
+
+线程池创建方法
+
+创建一个拥有固定线程数的线程池
+
+ExecutorService threadPool = Executors.newFixedThreadPool(3);
+　　2. 创建一个缓冲线程池，线程池中的线程数根据任务多少自动增删动态变化
+
+
+
+ExecutorService threadPool = Executors.newCachedThreadPool();
+
+
+　　3. 创建一个只有一个线程的线程池，与单线程一样，但它的好处是保证池子里始终存在一个线程，当线程意外死亡时会自动产生一个替补线程
+
+ExecutorService threadPool = Executors.newSingleThreadExecutor();
+往线程池添加任务
+
+threadPool.executor(Runnable)
+关闭线程池
+
+threadPool.shutdown();     //线程全部空闲，没有任务就关闭线程池
+threadPool.shutdownNow();  //不管任务有没有做完，都关掉
+应用案例
+
+固定大小的线程池&缓存线程池
+
+步骤1：用3个大小的固定线程池去执行10个内部循环10次就结束的任务，
+为了观察固定线程池下的其他任务一直再等待，希望打印出正在执行的线程名、任务序号和任务内部的循环次数，
+刚开始看到只有3个线程在执行，并看到任务前仆后继的效果。注意：这10个任务要用各自独立的runnable对象，才能看到任务的序号。
+步骤2：改为缓存线程池，可以看到当前有多少个任务，就会分配多少个线程为之服务。
+
+复制代码
+  import java.util.concurrent.ExecutorService;
+     import java.util.concurrent.Executors;
+
+     /**
+      * Created by liangyongxing on 2017/3/8.
+     */
+    public class ExecutorPoolTest {
+        public static void main(String[] args) {
+            //ExecutorService executorService = Executors.newCachedThreadPool();
+            ExecutorService executorService = Executors.newFixedThreadPool(3);
+            try {
+                for (int i = 1; i <= 10; i++) {  //向线程池提交10个任务
+                    final int sequence = i;
+                    //仔细品味runnable对象放到循环里面和外面的区别，为了让每个对象有自己独立的编号
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i = 1; i <= 2; i++) {
+                                //为了观察打印效果需要设置一定的休眠
+                                try {
+                                    Thread.sleep(200);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println(String.format("%s is serving %d task loop of %d.",
+                                        Thread.currentThread().getName(), sequence, i));
+                            }
+                        }
+                    });
+                }
+                /**
+                 * 用下面这句代码来说明上面的代码是在提交任务，并且所有的任务都已经提交了，但任务是什么时候执行的，则是由线程池调度的！
+                 */
+                System.out.println("all task have committed!");
+            } finally {
+                //注意与executorService.shutdownNow()的区别。
+                executorService.shutdown();
+            }
+        }
+    }
+复制代码
+运行线程缓冲池的打印效果如下所示：运行固定大小线程池的打印效果如下所示：
+
+
+
+用线程池启动定时器
+
+       a、创建调度线程池，提交任务，延迟指定时间后执行任务
+
+       　　Executors.newScheduledThreadPool(线程数).schedule(Runnable, 延迟时间，时间单位);
+
+       b、创建调度线程池，提交任务， 延迟指定时间执行任务后，间隔指定时间循环执行
+
+       　　Executors.newScheduledThreadPool(线程数). scheduleAtFixedRate (Runnable,延迟时间，间隔时间，时间单位);
+
+       所有的 schedule 方法都接受相对延迟和周期作为参数，而不是绝对的时间或日期。将以 Date 所表示的绝对时间转换成要求的形式很容易。例如，要安排在某个以后的 Date 运行，可以使用：schedule(task, date.getTime() - System.currentTimeMillis(),TimeUnit.MILLISECONDS)
+
+复制代码
+ 1 import java.util.concurrent.Executors;
+ 2 import java.util.concurrent.ScheduledExecutorService;
+ 3 import java.util.concurrent.TimeUnit;
+ 4
+ 5 /**
+ 6  * Created by liangyongxing on 2017/3/8.
+ 7  */
+ 8 public class ExexutorSchedulerTest {
+ 9     public static void main(String[] args) {
+10         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+11         //这个只执行一次就完毕，不会多次执行
+12         scheduledExecutorService.schedule(new Runnable() {
+13             @Override
+14             public void run() {
+15                 System.out.println("task begin running one!!!");
+16             }}, 5, TimeUnit.SECONDS);
+17
+18         //开始隔5s执行一次，后续每隔2s执行一次
+19         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+20             @Override
+21             public void run() {
+22                 System.out.println("task begin running two!!!");
+23             }}, 4, 2, TimeUnit.SECONDS);
+24     }
+25 }
+复制代码
+有意将第二次间隔循环起始时间设置小于第一次循环一次的起始时间，注意：线程池初始化容量为2，则这两个定时器相当于互不影响了，则打印结果如下所示：
+
+
+提示：按照JDK文档学习顺序，下一篇要讲解有关线程锁Lock，具体详情请查看我的下一篇博客：并发库应用之四 & 线程锁Lock应用

@@ -1,0 +1,209 @@
+星火燎原智勇
+关注 - 4
+粉丝 - 31
++加关注
+并发库应用之六 & 有条件阻塞Condition应用
+     Condition的功能类似在传统线程技术中的 Object.wait() 和 Object.natify() 的功能，传统线程技术实现的互斥只能一个线程单独干，不能说这个线程干完了通知另一个线程来干，Condition就是解决这个问题的，实现线程间的通信。比如CPU让小弟做事，小弟说我先歇着先让大哥做并通知大哥，大哥就开始做事。
+
+　　接口：public interface Condition
+
+　　Condition 将 Object 监视器方法（wait、notify和 notifyAll）分解成截然不同的对象，以便通过将这些对象与任意 Lock 实现组合使用，为每个对象提供多个等待 set（wait-set）。其中，Lock 替代了 synchronized 方法和语句的使用，Condition 替代了 Object 监视器方法的使用。
+
+　　Condition 实例实质上被绑定到一个锁上。要为特定 Lock 实例获得 Condition 实例，请使用其 newCondition() 方法。
+
+　　作为一个示例，假定有一个绑定的缓冲区，它支持 put 和 take 方法。如果试图在空的缓冲区上执行 take 操作，则在某一个项变得可用之前，线程将一直阻塞；如果试图在满的缓冲区上执行 put 操作，则在有空间变得可用之前，线程将一直阻塞。我们喜欢在单独的等待 set 中保存 put 线程和 take 线程，这样就可以在缓冲区中的项或空间变得可用时利用，一次只通知一个线程。可以使用两个 Condition 实例来做到这一点。
+
+　　一个锁内部可以有多个Condition，即有多路等待和通知，可以参看jdk1.5提供的 Lock 与 Condition 实现的可阻塞队列的应用案例，
+从中除了要体味算法，还要体味面向对象的封装。
+
+Condition使用案例之一：实现两个线程交替执行
+
+复制代码
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.Executors;
+ import java.util.concurrent.locks.Condition;
+ import java.util.concurrent.locks.Lock;
+ import java.util.concurrent.locks.ReentrantLock;
+
+ public class ConditionTest {
+
+     public static void main(String[] args) {
+         ExecutorService service = Executors.newSingleThreadExecutor();
+         final Business2 business = new Business2();
+         service.execute(new Runnable() {//提交5个business.sub方法任务到单个线程池中
+             public void run() {
+                 for (int i = 0; i < 5; i++) {
+                     business.sub();
+                 }
+             }
+
+         });
+
+         for (int i = 0; i < 5; i++) {//执行5次business.main方法
+             business.main();
+         }
+     }
+
+ }
+
+ class Business2 {
+     Lock lock = new ReentrantLock();
+     Condition condition = lock.newCondition();//得到当前锁阻塞条件
+     boolean isSub = true; //默认一开始限制性sub任务
+
+     public void sub() {
+         lock.lock();
+         if (!isSub) {//不是sub执行条件，则进入进行阻塞处理
+             try {
+                 condition.await();
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
+         try {
+             for (int i = 0; i < 5; i++) {
+                 System.out.println(Thread.currentThread().getName() + " : " + i);
+             }
+             isSub = false;
+             condition.signal();
+         } finally {
+             lock.unlock();
+         }
+
+     }
+
+     public void main() {
+         lock.lock();
+         if (isSub) { //是sub执行任务，则进入阻塞main任务
+             try {
+                 condition.await();
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
+         try {
+             for (int i = 0; i < 5; i++) {
+                 System.out.println(Thread.currentThread().getName() + " : " + i);
+             }
+             isSub = true;
+             condition.signal();
+         } finally {
+             lock.unlock();
+         }
+     }
+ }
+复制代码
+运行结果如下：
+
+　　
+
+Condition使用案例之二：实现三个线程交替执行
+
+复制代码
+ import java.util.concurrent.locks.Condition;
+ import java.util.concurrent.locks.Lock;
+ import java.util.concurrent.locks.ReentrantLock;
+
+ public class SignalTest2 {
+     public static void main(String[] args) {
+         new SignalTest2().init();
+     }
+
+     private void init() {
+         final Business b = new Business();
+         new Thread() {
+             public void run() {
+                 for (int i = 0; i < 5; i++)
+                     b.sub1();
+             }
+         }.start();
+
+         new Thread() {
+             public void run() {
+                 for (int i = 0; i < 5; i++)
+                     b.sub2();
+             }
+         }.start();
+
+         new Thread() {
+             public void run() {
+                 for (int i = 0; i < 5; i++)
+                     b.sub3();
+             }
+         }.start();
+     }
+
+     private class Business {
+         int status = 1;//开始默认执行第一个方法
+         Lock lock = new ReentrantLock();
+         Condition cond1 = lock.newCondition();
+         Condition cond2 = lock.newCondition();
+         Condition cond3 = lock.newCondition();
+
+         public void sub1() {
+             lock.lock();
+             while (status != 1) {
+                 try {
+                     cond1.await();
+                 } catch (Exception e) {
+                 }
+             }
+             for (int i = 1; i <= 5; i++) {
+                 try {
+                     Thread.sleep(200);
+                 } catch (Exception e) {}
+                 System.out.println("[sub1]" + Thread.currentThread().getName() + ":" + i);
+             }
+             status = 2;//1执行完指定2开始执行
+             cond2.signal();
+             lock.unlock();
+         }
+
+         public void sub2() {
+             lock.lock();
+             while (status != 2) {
+                 try {
+                     cond2.await();
+                 } catch (Exception e) {
+                 }
+             }
+             for (int i = 1; i <= 5; i++) {
+                 try {
+                     Thread.sleep(200);
+                 } catch (Exception e) {}
+                 System.out.println("[sub2]" + Thread.currentThread().getName() + ":" + i);
+             }
+             status = 3;//2执行完指定3开始执行
+             cond3.signal();
+             lock.unlock();
+         }
+
+         public void sub3() {
+             lock.lock();
+             while (status != 3) {
+                 try {
+                     cond3.await();
+                 } catch (Exception e) {
+                 }
+             }
+             for (int i = 1; i <= 5; i++) {
+                 try {
+                     Thread.sleep(200);
+                 } catch (Exception e) {
+                 }
+                 System.out.println("[sub3]" + Thread.currentThread().getName() + ":" + i);
+             }
+             status = 1;//3执行完指定1开始执行
+             cond1.signal();
+             lock.unlock();
+         }
+     }
+ }
+复制代码
+运行结果如下：
+
+提示：欢迎继续参看我相关的下一篇博客：并发库应用之七 & 信号灯Semaphore应用
+
+
+
+分类: 并行程序设计
