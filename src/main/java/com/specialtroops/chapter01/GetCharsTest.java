@@ -24,18 +24,23 @@ import org.apache.commons.lang.exception.ExceptionUtils;
  没有返回值，但会抛出 IndexOutOfBoundsException 异常。
  */
 public class GetCharsTest {
-    public static void main(String args[]) {
-        String Str1 = new String("www.runoob.com");
-        char[] Str2 = new char[6];
-
-        try {
-//            Str1.getChars(4, 10, Str2, 0);
-            Str1.getChars(4, 10, Str2, 2); //会触发异常
-            Str1.getChars(4, 8, Str2, 2);
-            System.out.print("拷贝的字符串为：" );
-            System.out.println(Str2 );
-        } catch( Exception ex) {
-            System.out.println("触发异常..." + ExceptionUtils.getStackTrace(ex));
-        }
-    }
+//    public static void main(String args[]) {
+//        String Str1 = new String("www.runoob.com");
+//        char[] Str2 = new char[6];
+//
+//        try {
+////            Str1.getChars(4, 10, Str2, 0);
+//            Str1.getChars(4, 10, Str2, 2); //会触发异常
+//            Str1.getChars(4, 8, Str2, 2);
+//            System.out.print("拷贝的字符串为：" );
+//            System.out.println(Str2 );
+//        } catch( Exception ex) {
+//            System.out.println("触发异常..." + ExceptionUtils.getStackTrace(ex));
+//        }
+//    }
+public static void main(String[] args) {
+    Person p1 = new Person(1, "luke");
+    Person p2 = new Person(1, "luke");
+    System.out.println(p1.equals(p2));
+}
 }
