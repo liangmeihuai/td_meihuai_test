@@ -11,5 +11,8 @@ public class IntegerCacheTest {
         Integer b1 = 129;
         System.out.println(a == b);
         System.out.println(a1 == b1);
+        int i = 0;
+        int d = (i++)+ (++i)+ (i++);
+        System.out.println("d = [ " + d + " ]");
     }
 }

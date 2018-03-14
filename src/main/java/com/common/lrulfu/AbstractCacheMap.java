@@ -9,8 +9,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */  
 public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
 
-  
-    class CacheObject<K2,V2> {  
+    // 这里有个缓存对象的内部类
+    class CacheObject<K2,V2> {
+        final K2 key;
+        final V2 cachedObject;
+        long lastAccess;        // 最后访问时间
+        long accessCount;       // 访问次数
+        long ttl;               // 对象存活时间(time-to-live)
         CacheObject(K2 key, V2 value, long ttl) {  
             this.key = key;  
             this.cachedObject = value;  
@@ -18,12 +23,6 @@ public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
             this.lastAccess = System.currentTimeMillis();  
         }
 
-        final K2 key;
-        final V2 cachedObject;
-        long lastAccess;        // 最后访问时间
-        long accessCount;       // 访问次数
-        long ttl;               // 对象存活时间(time-to-live)
-  
         boolean isExpired() {  
             if (ttl == 0) {  // ttl为0默认永不过期
                 return false;  
@@ -65,7 +64,7 @@ public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
         return defaultExpire;  
     }  
   
-  
+    // 只要有一个条件成立，说明有缓存是设置了过期时间，需要清除掉过期的缓存
     protected boolean isNeedClearExpiredObject(){  
         return defaultExpire > 0 || existCustomExpire ;  
     }  

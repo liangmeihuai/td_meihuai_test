@@ -11,20 +11,24 @@ public class InternTest {
 //        System.out.println(a == a.intern());
 //        System.out.println(b == b.intern());
 
-//        String h = "ayujj";
-//        String a = new String("ayujj");
-//        String b = new String("ayujj");
-//        System.out.println(a == a.intern());
-//        System.out.println(b == b.intern());
-//        System.out.println(h == b.intern());
+        String h = "ayujj";
+        String a = new String("ayujj");
+        String b = new String("ayujj");
+        System.out.println(a == a.intern());
+        System.out.println(b == b.intern());
+        System.out.println(h == b.intern());
 //        System.out.println(b.intern().hashCode());
+//        System.out.println(b.hashCode());
 //        System.out.println(h.hashCode());
+        System.out.println(System.identityHashCode(b.intern()));
+        System.out.println(System.identityHashCode(b));
+        System.out.println(System.identityHashCode(h));
 
         // 注意加append和不加append-2
-        String str1 = new StringBuilder("ayujj").toString();
-        System.out.println(str1.intern() == str1);
-        String str2 = new StringBuilder("ayujj").toString();
-        System.out.println(str2.intern() == str2);
+//        String str1 = new StringBuilder("ayujj").toString();
+//        System.out.println(str1.intern() == str1);
+//        String str2 = new StringBuilder("ayujj").toString();
+//        System.out.println(str2.intern() == str2);
 
 
 //        String str1 = new StringBuilder("ayu").append("jj").toString();

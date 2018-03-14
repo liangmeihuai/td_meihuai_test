@@ -11,7 +11,7 @@ public interface Cache<K,V> {
      *  
      * @return   
      */  
-    int size();  
+    int size();
       
     /** 
      * 返回默认存活时间 
