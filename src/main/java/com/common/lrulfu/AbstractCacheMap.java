@@ -46,13 +46,14 @@ public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
   
     protected int cacheSize;      // 缓存大小 , 0 -> 无限制  
       
-    protected  boolean existCustomExpire ; //是否设置默认过期时间  
+    protected  boolean existCustomExpire ; //是否设置默认过期时间
+    protected long defaultExpire;     // 默认过期时间, 0 -> 永不过期
       
     public int getCacheSize() {  
         return cacheSize;  
     }  
   
-    protected long defaultExpire;     // 默认过期时间, 0 -> 永不过期  
+
       
     public AbstractCacheMap(int cacheSize ,long defaultExpire){  
         this.cacheSize  = cacheSize ;  
@@ -106,7 +107,7 @@ public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
             if (co == null) {  
                 return null;  
             }  
-            if (co.isExpired() == true) {  
+            if (co.isExpired()) {
                 cacheMap.remove(key);  
                 return null;  
             }  

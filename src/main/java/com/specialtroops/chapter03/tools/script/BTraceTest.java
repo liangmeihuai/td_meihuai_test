@@ -8,12 +8,12 @@ import java.util.Map;
 
 @BTrace
 public class BTraceTest {
-
+//    static String aaa = "aaa";
 	@TLS
     static long startTime;
 
     @OnMethod(
-            clazz="chapter3.tools.btrace.TestHello",
+            clazz="com.specialtroops.chapter03.tools.btrace.TestHello",
             method="test"
     )
     public static void traceExecute() {
@@ -21,7 +21,7 @@ public class BTraceTest {
     }
 
     @OnMethod(
-            clazz="chapter3.tools.btrace.TestHello",
+            clazz="com.specialtroops.chapter03.tools.btrace.TestHello",
             method="test",
             location=@Location(Kind.RETURN)
     )
@@ -49,6 +49,23 @@ public class BTraceTest {
          jstack();
          println(strcat("delay:" , str(timeMillis() - startTime)));
          println(strcat("return value is:",str(result)));
-         
+
     }
+    /**
+     * 构造函数btrace无法调用之
+     */
+//    @OnMethod(
+//            clazz="com.specialtroops.chapter03.tools.btrace.TestHello",
+//            method="TestHello",
+//            location=@Location(Kind.ENTRY)
+//    )
+//        public static void traceExecute2(@Self com.specialtroops.chapter03.tools.btrace.TestHello TestHello,
+//                                    @ProbeClassName String className,
+//                                    @ProbeMethodName String methodName) {
+//        println("====================================>");
+//        println(strcat("call class = " , className));
+//        println(strcat("call method = " , methodName));
+//        jstack();
+//        println(strcat("delay:" , str(timeMillis() - startTime)));
+//    }
 }

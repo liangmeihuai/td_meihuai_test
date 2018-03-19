@@ -69,7 +69,7 @@ public interface Cache<K,V> {
     void clear();  
   
     /** 
-     * 返回缓存大小 
+     * 返回缓存大小 [总容量]
      *  
      * @return   
      */  

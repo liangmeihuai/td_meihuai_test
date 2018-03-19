@@ -11,7 +11,8 @@ import java.util.Map;
  * @param <K>  
  * @param <V>  
  */  
-public class LRUCache<K, V> extends AbstractCacheMap<K, V> {  
+public class LRUCache<K, V> extends AbstractCacheMap<K, V> {
+
   
     public LRUCache(int cacheSize, long defaultExpire) {  
           
