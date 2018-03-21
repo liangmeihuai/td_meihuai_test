@@ -36,7 +36,8 @@ public class FIFOCache<K, V> extends AbstractCacheMap<K, V> {
         }  
   
         if (firstKey != null && isFull()) {//删除过期对象还是满,继续删除链表第一个  
-            cacheMap.remove(firstKey);  
+            cacheMap.remove(firstKey);
+            count ++;// 自己加上去的
         }  
   
         return count;  

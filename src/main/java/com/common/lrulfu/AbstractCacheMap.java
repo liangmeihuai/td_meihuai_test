@@ -16,7 +16,7 @@ public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
         long lastAccess;        // 最后访问时间
         long accessCount;       // 访问次数
         long ttl;               // 对象存活时间(time-to-live)
-        CacheObject(K2 key, V2 value, long ttl) {  
+        CacheObject(K2 key, V2 value, long ttl) {
             this.key = key;  
             this.cachedObject = value;  
             this.ttl = ttl;  

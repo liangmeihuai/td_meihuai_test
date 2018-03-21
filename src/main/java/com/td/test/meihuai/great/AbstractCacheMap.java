@@ -1,11 +1,9 @@
 package com.td.test.meihuai.great;
-
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
- *
  * Simple to Introduction
  * @ProjectName:  [${project_name}]
  * @Package:      [${package_name}.${file_name}]
@@ -17,7 +15,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @UpdateDate:   [${date} ${time}]
  * @UpdateRemark: [说明本次修改内容]
  * @Version:      [v1.0]
- *
  */
 /**
  * Created by tend on 2018/3/16 ==>类描述
@@ -30,17 +27,17 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public abstract class AbstractCacheMap<K, V> implements Cache<K, V>{
     class CacheObject<K2, V2>{// 缓存对象
-        private K2 key;
-        private V2 cacheObject;
-        private long ttl;// 缓存存活时间
-        private int accessCount;// 缓存访问次数
-        private long lastAccess;// 缓存的最后访问时间
+         K2 key;
+         V2 cacheObject;
+         long ttl;// 缓存存活时间
+         int accessCount;// 缓存访问次数
+         long lastAccess;// 缓存的最后访问时间
 
         public CacheObject(K2 key, V2 cacheObject, long ttl) {
             this.key = key;
             this.cacheObject = cacheObject;
             this.ttl = ttl;
-//            this.accessCount = 1;// 默认这里被访问了一次,// 这里需要加吗，应该不需要
+//            this.accessCount = 1;// 默认这里被访问了一次,// 这里需要加吗，应该不需要（put的时候不需要更新，get访问才算）
             this.lastAccess = System.currentTimeMillis();
         }
 
@@ -177,8 +174,64 @@ public abstract class AbstractCacheMap<K, V> implements Cache<K, V>{
         }finally {
             readLock.lock();
         }
-
     }
 
+    /**
+     * 留给具体的子类实现这个删除缓存的算法，因为FIFOCache,LRUCache,LFUCache等子类
+     * 的删除缓存的规则都不一样，应该由它们来具体实现
+     * @return 返回的是删除了的缓存个数
+     */
+    protected abstract int eliminateCache();
+    @Override
+    public int eliminate(){
+        writeLock.lock();
+        try {
+            return eliminateCache();
+        }finally {
+            writeLock.unlock();
+        }
+    }
 
+    /**
+     * 清空所有缓存
+     */
+    @Override
+    public void clear(){
+        writeLock.lock();
+        try{
+            cacheMap.clear();
+        }finally {
+            writeLock.unlock();
+        }
+    }
+
+    /**
+     * 根据缓存的key删除此缓存
+     * @param key 删除的缓存的key
+     */
+    public void remove(K key){
+        writeLock.lock();
+        try{
+            cacheMap.remove(key);
+        }finally {
+            writeLock.unlock();
+        }
+    }
+
+    /**
+     * 返回默认缓存时间
+     * @return 返回默认缓存时间
+     */
+    @Override
+    public long getDefaultExpire() {
+        return defaultExpire;
+    }
+
+    /**
+     * 是否删除过期的缓存对象
+     * @return true需要删除过期缓存对象，false不需要删除
+     */
+    protected boolean isNeedClearExpiredObject(){
+        return existCustomerExpire || defaultExpire > 0;
+    }
 }
