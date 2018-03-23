@@ -10,8 +10,6 @@ import com.specialtroops.chapter04.socket.client.exceptions.DirectNotExistsExcep
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.Scanner;
 
