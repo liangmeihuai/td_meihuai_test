@@ -34,7 +34,7 @@ public class Worker extends Thread {
 					case SEND_FILE : processFile(); break;
 					case SEND_B_FILE : uploadFileContent(null); break;
 					case GET_FILE : downloadFile(); break;
-					default :
+					default :Commons.println("do nothing start....");
 				}
 			}catch(SaveExistsFileException e) {
 				logInfo(e.getMessage());

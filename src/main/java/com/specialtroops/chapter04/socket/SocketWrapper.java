@@ -89,6 +89,11 @@ public class SocketWrapper implements Closeable {
 		return this.inputStream.readLong();
 	}
 
+	/**
+	 * 等待读取流中数据达到bytes.len才返回，如果流中数据不到bytes.len则一直阻塞
+	 * @param bytes
+	 * @throws IOException
+     */
 	public void readFull(byte []bytes) throws IOException {
 		this.inputStream.readFully(bytes);
 	}
@@ -138,5 +143,6 @@ public class SocketWrapper implements Closeable {
 	}
 
 	public void displayStatus() throws SocketException {
+		System.out.println("这是我自己实现的显示的内容");
 	}
 }

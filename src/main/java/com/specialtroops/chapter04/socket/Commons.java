@@ -83,7 +83,8 @@ public class Commons {
 	}
 
 	public static void logInfo(String message) {
-		Class <?>clazz = Reflection.getCallerClass();
+		Class <?>clazz = Reflection.getCallerClass(2);
+		// Class <?>clazz = Reflection.getCallerClass(); ,不传参数和输入参数2的效果一样，都是返回调用者的类
 		String date = DATE_FORMAT_OBJECT.format(Calendar.getInstance().getTime());
 		println(date + " [] INFO " + clazz.getName() + " - " + message);
 	}

@@ -4,7 +4,7 @@ import com.specialtroops.chapter04.socket.SocketWrapper;
 import java.io.IOException;
 public interface Sendable {
 	
-	public byte getSendType();
+	 byte getSendType();
 
-	public void sendContent(SocketWrapper socketWrapper) throws IOException;
+	 void sendContent(SocketWrapper socketWrapper) throws IOException;
 }
