@@ -5,6 +5,10 @@ import com.specialtroops.chapter04.socket.client.sender.Sendable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import static com.specialtroops.chapter04.socket.Commons.findSendableClassByOrder;
+
+/**
+ * 根据命令确定分发器，把具体内容发送出去
+ */
 public class LineProcessor {
 
     private String []tokens;
