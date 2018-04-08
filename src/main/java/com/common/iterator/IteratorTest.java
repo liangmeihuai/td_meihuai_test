@@ -19,19 +19,19 @@ public class IteratorTest {
         list.add("eee");
         list.add("fff");
         list.add("ggg");
-//        for (String str: list){
-////            TimeUnit.SECONDS.sleep(2);
-//            System.out.println("str = [ " + str + " ]");
-//            list.remove("aaa");
-//        }
-
-        Iterator<String> iterator = list.iterator();
-        while (iterator.hasNext()){
-            String str = iterator.next();
+        for (String str: list){
+//            TimeUnit.SECONDS.sleep(2);
             System.out.println("str = [ " + str + " ]");
-           iterator.remove();
+            list.remove("aaa");
         }
-        System.out.println(list.size());
+
+//        Iterator<String> iterator = list.iterator();
+//        while (iterator.hasNext()){
+//            String str = iterator.next();
+//            System.out.println("str = [ " + str + " ]");
+//           iterator.remove();
+//        }
+//        System.out.println(list.size());
 
 
     }

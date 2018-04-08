@@ -3,8 +3,8 @@ import com.specialtroops.chapter04.socket.SocketWrapper;
 
 import java.io.IOException;
 public interface Sendable {
-	
-	 byte getSendType();
 
-	 void sendContent(SocketWrapper socketWrapper) throws IOException;
+	byte getSendType();
+
+	void sendContent(SocketWrapper socketWrapper) throws IOException;
 }

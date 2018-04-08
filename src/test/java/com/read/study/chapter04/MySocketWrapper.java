@@ -12,6 +12,25 @@ import static com.specialtroops.chapter04.socket.Commons.print;
  * @version 1.0.0.0
  * @date 2018/3/22 16:38
  * @since 1.0
+ *
+ *
+ * 一：DataOutput 接口
+
+1.接口的简介
+
+DataOutput 接口用于将数据从任意 Java 基本类型转换为一系列字节，并将这些字节写入二进制流（OutputStream）。
+同时还提供了一个将String 转换成 UTF-8修改版格式并写入所得到的系列字节的工具。
+
+对于此接口中写入字节的所有方法，如果由于某种原因无法写入某个字节，则抛出 IOException。
+
+2.实现该接口的类
+DataOutputStream 类 ，RandomAccessFile类
+
+3.接口定义的方法
+
+总结：
+
+所有的方法都是向向输出流中写入 -128~127 间的数字。
  */
 public class MySocketWrapper implements Closeable {
     private Socket socket;

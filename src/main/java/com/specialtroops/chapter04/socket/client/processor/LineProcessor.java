@@ -34,8 +34,8 @@ public class LineProcessor {
     public void sendContentBySocket(SocketWrapper socketWrapper) throws IOException {
         if(sendable != null && sendable.getSendType() > 0) {
             socketWrapper.write(sendable.getSendType());//发送类型
-            sendable.sendContent(socketWrapper);
-        }
+        sendable.sendContent(socketWrapper);
+    }
     }
 
     private String preLine(String line) {

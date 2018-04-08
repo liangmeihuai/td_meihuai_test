@@ -57,6 +57,30 @@ public class LRUCache<K, V> extends AbstractCacheMap<K, V> {
         }  
           
         return count;  
-    }  
+    }
+
+    public static void main(String[] args) {
+        Cache<String, String> cache = new LRUCache<>(10, 0);
+        cache.put("key","value");
+        cache.put("key1","value");
+        cache.put("key2","value");
+        cache.put("key3","value");
+        cache.put("key4","value");
+//        cache.put("key5","value");
+//        cache.put("key6","value");
+//        cache.put("key7","value");
+//        cache.put("key8","value");
+//        cache.put("key9","value");
+//        cache.put("key10","value");
+//        cache.put("key11","value");
+//        cache.put("key12","value");
+//        cache.put("key13","value");
+//        cache.put("key14","value");
+
+        System.out.println(cache.get("key"));
+        System.out.println(cache.getCacheSize());
+        System.out.println(cache.size());
+
+    }
   
 }  

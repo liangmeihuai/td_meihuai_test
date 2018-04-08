@@ -63,16 +63,7 @@ public class Commons {
 			new CharsetByteRelative("utf16" , (byte)3)
 	);
 
-	private final static Map<String , Class<? extends Sendable>> ORDER_CLASS_MAP
-			= new HashMap<String , Class<? extends Sendable>>() {
-		private static final long serialVersionUID = 3431099761909680054L;
-		{
-			put(SEND_MESSAGE_STR.toLowerCase() , MessageSender.class);
-			put(SEND_FILE_STR.toLowerCase() , FileSender.class);
-			put(SEND_B_FILE_STR.toLowerCase() , BFileSender.class);
-			put(GET_FILE_STR.toLowerCase() , GetFileSender.class);
-		}
-	};
+
 
 	public static void print(String str) {
 		System.out.print(str);
@@ -124,6 +115,17 @@ public class Commons {
 		}
 		throw new RuntimeException("不支持字符集编号：" + charsetCode);
 	}
+
+	private final static Map<String , Class<? extends Sendable>> ORDER_CLASS_MAP
+			= new HashMap<String , Class<? extends Sendable>>() {
+		private static final long serialVersionUID = 3431099761909680054L;
+		{
+			put(SEND_MESSAGE_STR.toLowerCase() , MessageSender.class);
+			put(SEND_FILE_STR.toLowerCase() , FileSender.class);
+			put(SEND_B_FILE_STR.toLowerCase() , BFileSender.class);
+			put(GET_FILE_STR.toLowerCase() , GetFileSender.class);
+		}
+	};
 
 	public static Class<? extends Sendable> findSendableClassByOrder(String order) {
 		Class<? extends Sendable>clazz = ORDER_CLASS_MAP.get(order.toLowerCase());
