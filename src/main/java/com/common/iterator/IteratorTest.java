@@ -20,10 +20,14 @@ public class IteratorTest {
         list.add("fff");
         list.add("ggg");
         for (String str: list){
-//            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.SECONDS.sleep(2);
             System.out.println("str = [ " + str + " ]");
             list.remove("aaa");
         }
+//        for (int i = 0; i < list.size();){
+//            System.out.println("str = [ " + list.get(i));
+//            list.remove(i);
+//        }
 
 //        Iterator<String> iterator = list.iterator();
 //        while (iterator.hasNext()){
