@@ -7,8 +7,11 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Hello world Server.
@@ -66,7 +69,6 @@ public class EchoServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() { // (4)//选择执行handler
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(new EchoServerHandler());
                         }
