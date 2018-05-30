@@ -278,6 +278,7 @@
             <artifactId>netty-all</artifactId>
           <!--  <version>4.1.6.Final</version>-->
             <version>4.0.56.Final</version>
+        <!--    <version>4.0.57.Final-SNAPSHOT</version>-->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
